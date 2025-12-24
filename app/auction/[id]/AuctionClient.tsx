@@ -22,7 +22,7 @@ type AuctionClientProps = {
   };
   initialHighestBid: number;
   initialBids: BidWithUser[];
-  effectiveEndsAt: string;
+  effectiveEndsAt: string | null;
   initialLive: boolean;
   initialNowMs: number;
   initialMarketOpen: boolean;
