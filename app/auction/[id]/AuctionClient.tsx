@@ -74,7 +74,7 @@ export function AuctionClient({
   }, []);
 
   useEffect(() => {
-    if (!displayLive) return;
+    if (!displayLive || !marketOpen) return;
     const interval = setInterval(async () => {
       const res = await fetch(`/api/auctions/${auction.id}`);
       if (!res.ok) return;
@@ -86,7 +86,7 @@ export function AuctionClient({
       setHasBids(Boolean(data.hasBids ?? data.bids.length));
     }, 1000);
     return () => clearInterval(interval);
-  }, [auction.id, displayLive]);
+  }, [auction.id, displayLive, marketOpen]);
 
   function formatHms(ms: number) {
     const totalSeconds = Math.max(0, Math.floor(ms / 1000));
