@@ -70,9 +70,12 @@ export function isWithinBidHours(now: Date = new Date()): boolean {
     .split(":");
   const hour = Number(parts[0]);
   const minute = Number(parts[1]);
-  const afterOpen = hour > 13 || (hour === 13 && minute >= 0); // 13:00 ET
-  const beforeClose = hour < 25 || (hour === 25 && minute < 0); // 01:00 ET next day (hour 25 -> 01)
-  return afterOpen && beforeClose;
+  const minutesFromMidnight = hour * 60 + minute;
+  const openMinutes = 13 * 60; // 13:00 ET
+  const closeMinutes = 25 * 60; // 01:00 ET next day (25:00)
+  // If before open (e.g., 00:30), treat as next-day minute count.
+  const shifted = minutesFromMidnight < openMinutes ? minutesFromMidnight + 24 * 60 : minutesFromMidnight;
+  return shifted >= openMinutes && shifted < closeMinutes;
 }
 
 export function computeEffectiveEndsAt(

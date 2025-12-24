@@ -32,7 +32,8 @@ export default async function AuctionsPage() {
         style={{
           display: "grid",
           gap: 16,
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))"
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          justifyItems: "center"
         }}
       >
         {auctions.map((auction) => {
