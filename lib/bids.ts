@@ -15,10 +15,11 @@ export async function getHighestBidsForAuctions(auctionIds: string[]) {
     }
   });
 
-  return bids.reduce<Record<string, HighestBid>>((acc, bid) => {
-    acc[bid.auctionId] = { amount: bid.amount, user: bid.user };
-    return acc;
-  }, {});
+  const map: Record<string, HighestBid> = {};
+  for (const bid of bids) {
+    map[bid.auctionId] = { amount: bid.amount, user: bid.user };
+  }
+  return map;
 }
 
 export async function getAuctionBids(auctionId: string, limit = 50) {
@@ -40,9 +41,10 @@ export async function getLatestBidTimes(auctionIds: string[]) {
     distinct: ["auctionId"],
     select: { auctionId: true, createdAt: true }
   });
-  return latest.reduce<Record<string, Date>>((acc, row) => {
-    acc[row.auctionId] = row.createdAt;
-    return acc;
-  }, {});
+  const map: Record<string, Date> = {};
+  for (const row of latest) {
+    map[row.auctionId] = row.createdAt;
+  }
+  return map;
 }
 
