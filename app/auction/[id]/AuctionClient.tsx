@@ -149,7 +149,7 @@ export function AuctionClient({
   }
 
   return (
-    <div className="card">
+    <div className="card" style={{ width: "100%", maxWidth: 520 }}>
       <div className="flex" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
           <h2 style={{ margin: "0 0 4px" }}>{auction.title}</h2>

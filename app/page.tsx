@@ -18,7 +18,7 @@ export default async function HomePage() {
         gap: 16
       }}
     >
-      <h1 style={{ margin: 0 }}>Auctioneer 0.0.0</h1>
+      <h1 style={{ margin: 0 }}>Auctionear 0.0.0</h1>
       <form
         action={async () => {
           "use server";
