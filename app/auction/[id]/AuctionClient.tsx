@@ -35,6 +35,7 @@ type AuctionApiResponse = {
   bids: BidWithUser[];
   endsAt: string | null;
   live: boolean;
+  hasBids?: boolean;
 };
 
 export function AuctionClient({
@@ -82,7 +83,7 @@ export function AuctionClient({
       setBids(data.bids);
       setEndsAtIso(data.endsAt);
       setLive(data.live);
-      setHasBids(Boolean(data.endsAt));
+      setHasBids(Boolean(data.hasBids ?? data.bids.length));
     }, 1000);
     return () => clearInterval(interval);
   }, [auction.id, displayLive]);
@@ -125,6 +126,7 @@ export function AuctionClient({
       setBids(data.bids);
       setEndsAtIso(data.endsAt);
       setLive(data.live);
+      setHasBids(Boolean(data.hasBids ?? data.bids.length));
     }
   }
 
