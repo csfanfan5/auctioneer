@@ -13,6 +13,8 @@ type BidWithUser = {
   user: { id: string; name: string | null; image: string | null } | null;
 };
 
+type HighBidder = { id: string; name: string | null; image: string | null } | null;
+
 type AuctionClientProps = {
   auction: {
     id: string;
@@ -21,6 +23,7 @@ type AuctionClientProps = {
     endsAt: string;
   };
   initialHighestBid: number;
+  initialHighBidder: HighBidder;
   initialBids: BidWithUser[];
   effectiveEndsAt: string | null;
   initialLive: boolean;
@@ -32,6 +35,7 @@ type AuctionClientProps = {
 type AuctionApiResponse = {
   auction: AuctionClientProps["auction"];
   highestBid: number;
+  highBidder?: HighBidder;
   bids: BidWithUser[];
   endsAt: string | null;
   live: boolean;
@@ -42,6 +46,7 @@ export function AuctionClient({
   auction,
   effectiveEndsAt,
   initialHighestBid,
+  initialHighBidder,
   initialBids,
   initialLive,
   initialNowMs,
@@ -50,6 +55,7 @@ export function AuctionClient({
 }: AuctionClientProps) {
   const { data: session } = useSession();
   const [highestBid, setHighestBid] = useState(initialHighestBid);
+  const [highBidder, setHighBidder] = useState<HighBidder>(initialHighBidder);
   const [bids, setBids] = useState<BidWithUser[]>(initialBids);
   const [amount, setAmount] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -63,6 +69,7 @@ export function AuctionClient({
   const endsAtMs = useMemo(() => (endsAtIso ? new Date(endsAtIso).getTime() : null), [endsAtIso]);
   const timeLive = endsAtMs ? endsAtMs > now : true;
   const displayLive = live && timeLive && hasBids;
+  const settled = Boolean(hasBids && endsAtMs && endsAtMs <= now);
 
   useEffect(() => {
     const tick = setInterval(() => {
@@ -74,19 +81,21 @@ export function AuctionClient({
   }, []);
 
   useEffect(() => {
+    if (settled) return;
     if (!displayLive || !marketOpen) return;
     const interval = setInterval(async () => {
       const res = await fetch(`/api/auctions/${auction.id}`);
       if (!res.ok) return;
       const data: AuctionApiResponse = await res.json();
       setHighestBid(data.highestBid);
+      if (data.highBidder !== undefined) setHighBidder(data.highBidder);
       setBids(data.bids);
       setEndsAtIso(data.endsAt);
       setLive(data.live);
       setHasBids(Boolean(data.hasBids ?? data.bids.length));
     }, 1000);
     return () => clearInterval(interval);
-  }, [auction.id, displayLive, marketOpen]);
+  }, [auction.id, displayLive, marketOpen, settled]);
 
   function formatHms(ms: number) {
     const totalSeconds = Math.max(0, Math.floor(ms / 1000));
@@ -123,6 +132,7 @@ export function AuctionClient({
     if (detail.ok) {
       const data: AuctionApiResponse = await detail.json();
       setHighestBid(data.highestBid);
+      if (data.highBidder !== undefined) setHighBidder(data.highBidder);
       setBids(data.bids);
       setEndsAtIso(data.endsAt);
       setLive(data.live);
@@ -146,6 +156,21 @@ export function AuctionClient({
     if (!marketOpen) return `Market closed · ${formatHms(msRemaining)} remaining · closes at ${atTime}`;
     if (!displayLive) return `Closed · ${formatHms(msRemaining)} remaining · closes at ${atTime}`;
     return `Ends in ${formatHms(msRemaining)} · closes at ${atTime}`;
+  }
+
+  if (settled) {
+    return (
+      <div className="card" style={{ width: "100%", maxWidth: 520 }}>
+        <h2 style={{ margin: "0 0 4px" }}>{auction.title}</h2>
+        {auction.description ? <p className="muted" style={{ margin: 0 }}>{auction.description}</p> : null}
+        <div style={{ marginTop: 14 }}>
+          <div className="muted" style={{ marginBottom: 4 }}>Awarded to</div>
+          <div style={{ fontWeight: 700 }}>
+            {highBidder?.name ?? "Unknown"} at ${highestBid}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

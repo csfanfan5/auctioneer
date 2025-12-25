@@ -32,6 +32,7 @@ export default async function AuctionPage({ params }: Params) {
       <AuctionClient
         auction={auction}
         initialHighestBid={top?.amount ?? 0}
+        initialHighBidder={top?.user ?? null}
         initialBids={bids}
         effectiveEndsAt={effectiveEndsAt}
         initialLive={isAuctionLive(effectiveEndsAt, now)}

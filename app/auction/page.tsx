@@ -44,6 +44,7 @@ export default async function AuctionsPage() {
               key={auction.id}
               auction={auction}
               initialHighestBid={highest[auction.id]?.amount ?? 0}
+              initialHighBidder={highest[auction.id]?.user ?? null}
               initialBids={bidsFor}
               effectiveEndsAt={endsAt}
               initialLive={isAuctionLive(endsAt, now)}
