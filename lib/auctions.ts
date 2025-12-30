@@ -23,33 +23,9 @@ if (!globalMutable.__auctionAnchors) {
 // Hardcoded auctions. Update the list to add/remove auctions.
 export const auctions: Auction[] = [
   {
-    id: "rome-bed",
-    title: "Rome Bed",
-    description: "Additional money for single bed for 3 nights",
-    endsAt: "9999-12-31T23:59:59.000Z"
-  },
-  {
-    id: "rome-couch",
-    title: "Rome Couch",
-    description: "Additional money for single sofa bed for 3 nights",
-    endsAt: "9999-12-31T23:59:59.000Z"
-  },
-  {
-    id: "venice-bed",
-    title: "Venice Bed",
+    id: "florence-bed",
+    title: "Florence Bed",
     description: "Additional money for single bed for 2 nights",
-    endsAt: "9999-12-31T23:59:59.000Z"
-  }, 
-  {
-    id: "venice-couch-1",
-    title: "Venice Couch 1",
-    description: "Additional money for single sofa bed for 2 nights",
-    endsAt: "9999-12-31T23:59:59.000Z"
-  },
-  {
-    id: "venice-couch-2",
-    title: "Venice Couch 2",
-    description: "Additional money for single sofa bed for 2 nights",
     endsAt: "9999-12-31T23:59:59.000Z"
   }
 ];
